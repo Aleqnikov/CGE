@@ -11,13 +11,15 @@
 #include "../../Algebra/Point2D.h"
 #include "../../Algebra/LinealAlgebra.h"
 
-
+/**
+ * @brief Виртуальный класс многоугольника, является предком всех
+ * остальных классов многоугольника.
+ */
 class Polygon {
 public:
     std::vector<Point2D> vertices;
     virtual bool inPolygon(Point2D point);
 };
-
 
 
 #endif //SHAPE_H

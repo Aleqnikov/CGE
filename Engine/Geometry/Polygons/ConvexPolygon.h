@@ -7,10 +7,19 @@
 
 #include "Polygon.h"
 
+
+/**
+ * @brief Класс реализующий выпуклый многоугольник.
+ * 
+ * В нем представленна реализация метода поиска сектора, которому принадлежит 
+ * точка. 
+ * А также метод, который определяет, принадлежит ли передаваемая точка 
+ * текущему многоугольнику.
+ */
 class ConvexPolygon : public Polygon{
 public:
-    ConvexPolygon();
-
+    ConvexPolygon(int сount_vertices);
+    ConvexPolygon() : ConvexPolygon(10) {};
 
     bool inPolygon(Point2D point);
     int find_sector(Point2D point);
