@@ -7,8 +7,13 @@
 
 #include "Polygon.h"
 
-class ConvexPolygon : public Shape{
+class ConvexPolygon : public Polygon{
+public:
+    ConvexPolygon();
 
+
+    bool inPolygon(Point2D point);
+    int find_sector(Point2D point);
 };
 
 

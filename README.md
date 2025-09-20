@@ -5,4 +5,6 @@ COMPUTATIONAL GEOMETRY ENGINE
 
 Покрыть тестами)
 
+СЧитаем что против часовой стрелки
+
 

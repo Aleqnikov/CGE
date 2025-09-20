@@ -6,12 +6,16 @@
 #define SHAPE_H
 
 #include <vector>
+#include <algorithm>
 
 #include "../../Algebra/Point2D.h"
+#include "../../Algebra/LinealAlgebra.h"
+
 
 class Polygon {
 public:
     std::vector<Point2D> vertices;
+    virtual bool inPolygon(Point2D point);
 };
 
 

@@ -7,7 +7,12 @@
 
 #include "Polygon.h"
 
-class RegularPolygon : public Shape{
+class RegularPolygon : public Polygon{
+public:
+    RegularPolygon();
+
+    bool inPolygon(Point2D point);
+
 
 };
 
