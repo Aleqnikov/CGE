@@ -5,9 +5,9 @@
 #ifndef REGULARPOLUGON_H
 #define REGULARPOLUGON_H
 
-#include "Shape.h"
+#include "Polygon.h"
 
-class RegularPolugon : public Shape{
+class RegularPolygon : public Shape{
 
 };
 

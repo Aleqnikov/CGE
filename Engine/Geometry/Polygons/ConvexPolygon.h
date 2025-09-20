@@ -5,7 +5,7 @@
 #ifndef CONVEXPOLYGON_H
 #define CONVEXPOLYGON_H
 
-#include "Shape.h"
+#include "Polygon.h"
 
 class ConvexPolygon : public Shape{
 

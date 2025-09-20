@@ -9,7 +9,7 @@
 
 #include "../../Algebra/Point2D.h"
 
-class Shape {
+class Polygon {
 public:
     std::vector<Point2D> vertices;
 };

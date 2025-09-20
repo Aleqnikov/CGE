@@ -5,7 +5,7 @@
 #ifndef STARPOLYGON_H
 #define STARPOLYGON_H
 
-#include "Shape.h"
+#include "Polygon.h"
 
 class StarPolygon : public Shape{
 
