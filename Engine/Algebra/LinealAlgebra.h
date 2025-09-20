@@ -17,10 +17,7 @@ namespace LinealAlgebra {
     /**
      * @brief Функция псевдо скалярного произведения.
      */
-    double pscalar(Point2D a, Point2D b) {
-        return a.x * b.y - a.y * b.x;
-    }
-
+    double pscalar(Point2D, Point2D);
     
     Orientations orientation(Point2D, Point2D, Point2D);
 

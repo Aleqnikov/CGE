@@ -4,6 +4,10 @@
 
 #include "LinealAlgebra.h"
 
+double LinealAlgebra::pscalar(Point2D a, Point2D b) {
+    return a.x * b.y - a.y * b.x;
+}
+
 
 /**
  * @breif Поиск ориентации точки с относительно точек а и b

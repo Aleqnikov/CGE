@@ -18,7 +18,7 @@
  */
 class ConvexPolygon : public Polygon{
 public:
-    ConvexPolygon(int сount_vertices);
+    ConvexPolygon(int);
     ConvexPolygon() : ConvexPolygon(10) {};
 
     bool inPolygon(Point2D point);
