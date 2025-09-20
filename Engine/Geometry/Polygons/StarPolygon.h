@@ -7,8 +7,14 @@
 
 #include "Polygon.h"
 
-class StarPolygon : public Shape{
+class StarPolygon : public Polygon{
+public:
+    StarPolygon(int count_vert);
+    
+    StarPolygon() : StarPolygon(10) {} ;
 
+    bool inPolygon(Point2D point);
+    int find_sector(Point2D point);
 };
 
 
