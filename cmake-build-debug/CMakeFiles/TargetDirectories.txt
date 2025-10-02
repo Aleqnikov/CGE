@@ -1,3 +1,0 @@
-/Users/ivanalejnikov/CLionProjects/VgeomPr/CGE/cmake-build-debug/CMakeFiles/CGE.dir
-/Users/ivanalejnikov/CLionProjects/VgeomPr/CGE/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/ivanalejnikov/CLionProjects/VgeomPr/CGE/cmake-build-debug/CMakeFiles/rebuild_cache.dir

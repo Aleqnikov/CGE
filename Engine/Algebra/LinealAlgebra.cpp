@@ -28,12 +28,17 @@ LinealAlgebra::Orientations LinealAlgebra::orientation(Point2D a, Point2D b, Poi
  * @brief Данная функция проверяет, пересекает прямая, проведеная из z ребро, задаю
 * задающееся точками b, t
 */
-bool LinealAlgebra::cross_rib(Point2D b, Point2D t, Point2D z) {
-    if(!(std::min(b.y, t.y) < z.y && std::max(b.y, t.y) <= z.y)) 
-        return false;
+bool LinealAlgebra::cross_rib(Point2D a, Point2D b, Point2D p) {
+    if(a.y > b.y) std::swap(a, b);
 
-    if(orientation(b, t, z) != Orientations::Right)
-        return false;
+    if(p.y <= a.y || p.y > b.y) return false;
 
-    return true;
+    // orientation(a, b, far) → где точка «далеко справа» относительно того же ребра.
+    // Если результаты разные, луч пересекает ребро.
+    Point2D far = {1e9, p.y};
+
+    Orientations o1 = orientation(a, b, p);
+    Orientations o2 = orientation(a, b, far);
+
+    return o1 != o2;
 }

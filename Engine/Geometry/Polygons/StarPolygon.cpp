@@ -10,6 +10,7 @@
 #include "StarPolygon.h"
 
 
+
 /**
  * @brief Конструктор звездного многоугольника.
  * 
@@ -38,6 +39,7 @@
         vertices.push_back({r * std::cos(a), r * std::sin(a)});
     }
 
+
 }
 
 
@@ -58,7 +60,7 @@
  */
 int StarPolygon::find_sector(Point2D point){
     Point2D base = Point2D(0,0);                                            // По построению всегда центр звезности.
-
+    std::cout << "find_sector" << std::endl;
     auto it = std::partition_point(vertices.begin(), vertices.end(),
         [&](const Point2D p) {
             return LinealAlgebra::pscalar(p - base, point - base) >= 0;
@@ -80,10 +82,43 @@ int StarPolygon::find_sector(Point2D point){
  */
 bool StarPolygon::inPolygon(Point2D point){
     int left = find_sector(point);
+
     int right = (left == vertices.size() - 1)? 0 : left + 1;
-    
+
+    if(left == -1){
+        right = 0;
+        left = vertices.size() - 1;
+    }
+
     if(LinealAlgebra::orientation(vertices[left], vertices[right], point) == LinealAlgebra::Orientations::Right)
         return true;
 
+
+
+
     return false;
+}
+
+
+void StarPolygon::Regenerate(){
+    int count_vertices = vertices.size();
+
+    vertices.clear();
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> angleDist(0, 2 * M_PI);
+
+    std::set<double> angles;
+
+    while (angles.size() != count_vertices)
+        angles.insert(angleDist(gen));
+
+    std::uniform_real_distribution<> radDist(0, 2 * count_vertices);
+
+    for (double a : angles) {
+        double r = radDist(gen);
+        vertices.push_back({r * std::cos(a), r * std::sin(a)});
+    }
+
 }

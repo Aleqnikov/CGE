@@ -17,8 +17,11 @@
  */
 class Polygon {
 public:
+
     std::vector<Point2D> vertices;
-    bool inPolygon(Point2D) { return false; }
+    bool virtual inPolygon(Point2D) { return false; }
+
+    void virtual Regenerate() {};
 };
 
 

@@ -14,12 +14,11 @@
  */
 bool RegularPolygon::inPolygon(Point2D point){
     int cnt = 0;
-
-    for(int i = 0; i < vertices.size() - 1; i++)
-        if(LinealAlgebra::cross_rib(vertices[i], vertices[i + 1], point))
+    int n = vertices.size();
+    for(int i = 0; i < n; i++)
+        if(LinealAlgebra::cross_rib(vertices[i], vertices[(i+1)%n], point))
             cnt++;
-    
-    return cnt % 2 == 0;
+    return cnt % 2 == 1;
 }
 
 /**
@@ -53,3 +52,28 @@ bool RegularPolygon::inPolygon(Point2D point){
     }
 
 }
+
+ void RegularPolygon::Regenerate(){
+
+     int count_vertices = vertices.size();
+
+     vertices.clear();
+
+     std::random_device rd;
+     std::mt19937 gen(rd());
+     std::uniform_real_distribution<> angleDist(0, 2 * M_PI);
+
+     std::vector<double> angles(count_vertices);
+
+     for (int i = 0; i < count_vertices; ++i)
+         angles[i] = angleDist(gen);
+
+     std::sort(angles.begin(), angles.end());                                    // для ориентации многоугольника против часовой стрелки
+
+     std::uniform_real_distribution<> radDist(0, 2 * count_vertices);
+
+     for (double a : angles) {
+         double r = radDist(gen);
+         vertices.push_back({r * std::cos(a), r * std::sin(a)});
+     }
+ }

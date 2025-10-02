@@ -21,8 +21,9 @@ public:
     ConvexPolygon(int);
     ConvexPolygon() : ConvexPolygon(10) {};
 
-    bool inPolygon(Point2D point);
+    bool inPolygon(Point2D point) override;
     int find_sector(Point2D point);
+     void  Regenerate() override;
 };
 
 

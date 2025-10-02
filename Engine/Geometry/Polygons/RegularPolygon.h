@@ -20,7 +20,8 @@ public:
     
     RegularPolygon() : RegularPolygon(10) {} ;
 
-    bool inPolygon(Point2D point);
+    bool inPolygon(Point2D point) override;
+    void  Regenerate() override;
 };
 
 #endif //REGULARPOLUGON_H

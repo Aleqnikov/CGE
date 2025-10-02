@@ -46,8 +46,10 @@ int ConvexPolygon::find_sector(Point2D point){
  */
 bool ConvexPolygon::inPolygon(Point2D point){
     int left = find_sector(point);
-    int right = (left == vertices.size() - 1)? 0 : left + 1;
+    int right = (left == vertices.size() - 1) ? 0 : left + 1;
     
+    std::cout << "lefrt" << left << std::endl;
+
     if(LinealAlgebra::orientation(vertices[left], vertices[right], point) == LinealAlgebra::Orientations::Right)
         return true;
 
@@ -84,5 +86,29 @@ ConvexPolygon::ConvexPolygon(int count_vertices) {
         vertices.push_back(Point2D(
             count_vertices*std::cos(2* M_PI * angle / count_vertices), 
             count_vertices*std::sin(2* M_PI * angle / count_vertices))
-        );
+    );
+
+
+}
+
+void ConvexPolygon::Regenerate(){
+    std::set<int> vertices_uniq;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    int count_vertices = vertices.size();
+
+    vertices.clear();
+
+    std::uniform_int_distribution<> dist(0, count_vertices);
+
+    while(vertices_uniq.size() != count_vertices)
+        vertices_uniq.insert(dist(gen));
+
+    for(auto angle : vertices_uniq)
+        vertices.push_back(Point2D(
+            count_vertices*std::cos(2* M_PI * angle / count_vertices),
+            count_vertices*std::sin(2* M_PI * angle / count_vertices))
+    );
 }
