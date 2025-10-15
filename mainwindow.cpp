@@ -4,7 +4,8 @@
 #include "./Engine/Geometry/Polygons/Polygon.h"
 #include "./Engine/Geometry/Polygons/ConvexPolygon.h"
 #include "./Engine/Geometry/Polygons/RegularPolygon.h"
-#include "./Engine/Geometry/Polygons/StarPolygon.h".h"
+#include "./Engine/Geometry/Polygons/StarPolygon.h"
+#include "./Engine/Geometry/Mesh/CreateMesh.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -46,7 +47,112 @@ void MainWindow::FirstPage()
         GetDataInPolygon();
         stackedWidget->setCurrentIndex(1);
     });
+
+    connect(create_convex_hull, &QPushButton::clicked, [this]() {
+        GetDataConvexHull();
+        stackedWidget->setCurrentIndex(1);
+    });
 }
+
+void MainWindow::GetDataConvexHull() {
+    QWidget *page = new QWidget;
+    QVBoxLayout *mainLayout = new QVBoxLayout(page);
+
+    QLabel *count_peacs = new QLabel("Введите количество точек на которых хотите посторить выпуклую оболочку");
+    QSpinBox *spin = new QSpinBox;
+    spin->setRange(10, 10000);
+    spin->setValue(10);
+
+    QLabel *mode_of_hull = new QLabel("Выберите вид алгоритма постоения выпуклой оболочки");
+    QComboBox *setModStat = new QComboBox;
+    setModStat->addItems({"Jarvis", "Andrews", "Implemential"});
+
+    QPushButton *confirm = new QPushButton("Подтвердить");
+
+    connect(confirm, &QPushButton::clicked, [this, spin, setModStat]() {
+        int n = spin->value();
+
+        std::shared_ptr<Mesh> Hull;
+
+        Hull = std::make_shared<Mesh>(n);
+
+        std::vector<Point2D> result;
+        if(setModStat->currentText() == "Jarvis")
+            result = Hull->JarvisMarch();
+        else if(setModStat->currentText() == "Andrews")
+            result = Hull->Andrews();
+        else
+            result = Hull->Implemential();
+
+        HullDraw(Hull->mesh, result);
+
+    });
+
+    mainLayout->addWidget(count_peacs);
+    mainLayout->addWidget(spin);
+    mainLayout->addWidget(mode_of_hull);
+    mainLayout->addWidget(setModStat);
+    mainLayout->addWidget(confirm);
+
+    page->setLayout(mainLayout);
+    stackedWidget->addWidget(page);
+}
+
+
+void MainWindow::HullDraw(std::vector<Point2D> point, std::vector<Point2D> hull) {
+    // Преобразуем hull в QPolygonF
+    QPolygonF qpoly;
+    qpoly.reserve(hull.size());
+    for (const auto &v : hull) {
+        qpoly << QPointF(v.x, v.y);
+    }
+
+    // Создаём сцену и view
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    MyGraphicsViewHull *view = new MyGraphicsViewHull();
+    view->setFocusPolicy(Qt::StrongFocus);
+    view->setSceneAndInit(scene);
+
+    // Фон
+    scene->setBackgroundBrush(QBrush(Qt::black));
+
+    // Полигон зелёным (cosmetic pen - не масштабируется)
+    QPen pen(Qt::green);
+    pen.setWidth(0); // cosmetic pen
+    pen.setCosmetic(true);
+    QGraphicsPolygonItem *polyItem = scene->addPolygon(qpoly, pen, QBrush());
+    polyItem->setFlag(QGraphicsItem::ItemIsSelectable, false);
+    polyItem->setFlag(QGraphicsItem::ItemIsMovable, false);
+    polyItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+
+    // Рисуем точки красным, постоянного размера в пикселях
+    QBrush redBrush(Qt::red);
+    QPen redPen(Qt::NoPen);
+    double radius = 2.5; // радиус в пикселях
+
+    for (const auto &p : point) {
+        QGraphicsEllipseItem *pointItem = scene->addEllipse(
+            -radius, -radius,
+            radius * 2, radius * 2,
+            redPen,
+            redBrush
+            );
+        pointItem->setPos(p.x, p.y);
+        pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+        pointItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    }
+
+    // Создаём виджет с view
+    QWidget *graphicsPage = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout(graphicsPage);
+    layout->addWidget(view);
+    graphicsPage->setLayout(layout);
+
+    stackedWidget->addWidget(graphicsPage);
+    stackedWidget->setCurrentIndex(2);
+    view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+}
+
 
 void MainWindow::GetDataInPolygon()
 {
@@ -111,7 +217,7 @@ void MainWindow::PolygonInModeDraw(std::shared_ptr<Polygon> polygon){
 
     // КРИТИЧНО: используем cosmetic pen (не масштабируется)
     QPen pen(Qt::green);
-    pen.setWidth(0); // cosmetic pen - всегда 1 пиксель
+    pen.setWidth(0);                // cosmetic pen - всегда 1 пиксель
     pen.setCosmetic(true);
 
     QGraphicsPolygonItem *polyItem = scene->addPolygon(qpoly, pen, QBrush());

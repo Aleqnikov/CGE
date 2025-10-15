@@ -13,6 +13,7 @@
 #include <QPen>
 
 #include "MyGraphicsView.h"
+#include "MyGraphicsViewHull.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -32,9 +33,13 @@ public:
     void FirstPage();
     void GetDataInPolygon();
     void PolygonInModeDraw(std::shared_ptr<Polygon>);
+    void GetDataConvexHull();
+    void HullDraw(std::vector<Point2D>, std::vector<Point2D>);
 
 private:
     QStackedWidget *stackedWidget;
     Ui::MainWindow *ui;
+
+
 };
 #endif // MAINWINDOW_H

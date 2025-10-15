@@ -1,4 +1,4 @@
-QT       += core gui widgets opengl openglwidgets
+QT       += core gui widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,10 +16,12 @@ SOURCES += \
     Engine/Geometry/Polygons/ConvexPolygon.cpp \
     Engine/Geometry/Polygons/Polygon.cpp \
     Engine/Geometry/Polygons/RegularPolygon.cpp \
+    Engine/Geometry/Mesh/CreateMesh.cpp \
     Engine/Geometry/Polygons/StarPolygon.cpp
 
 HEADERS += \
     MyGraphicsView.h \
+    MyGraphicsViewHull.h \
     mainwindow.h \
     ProjectInfo.h \
     Engine/Algebra/LinealAlgebra.h \
@@ -27,6 +29,7 @@ HEADERS += \
     Engine/Geometry/Polygons/ConvexPolygon.h \
     Engine/Geometry/Polygons/Polygon.h \
     Engine/Geometry/Polygons/RegularPolygon.h \
+    Engine/Geometry/Mesh/CreateMesh.h \
     Engine/Geometry/Polygons/StarPolygon.h
 
 FORMS += \

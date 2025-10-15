@@ -6,6 +6,7 @@
 #define STARPOLYGON_H
 
 #include "Polygon.h"
+#include "../../Algebra/LinealAlgebra.h"
 
 class StarPolygon : public Polygon{
 public:
@@ -14,9 +15,11 @@ public:
     StarPolygon() : StarPolygon(10) {} ;
 
     bool inPolygon(Point2D point) override;
-    int find_sector(Point2D point);
+
     void  Regenerate() override;
 };
+
+
 
 
 

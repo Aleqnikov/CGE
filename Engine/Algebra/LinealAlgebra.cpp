@@ -33,12 +33,59 @@ bool LinealAlgebra::cross_rib(Point2D a, Point2D b, Point2D p) {
 
     if(p.y <= a.y || p.y > b.y) return false;
 
-    // orientation(a, b, far) → где точка «далеко справа» относительно того же ребра.
-    // Если результаты разные, луч пересекает ребро.
-    Point2D far = {1e9, p.y};
-
     Orientations o1 = orientation(a, b, p);
-    Orientations o2 = orientation(a, b, far);
 
-    return o1 != o2;
+    return o1 == Orientations::Right;
+}
+
+/**
+ * @brief Функция определения принадлежности точки выпуклому многоульнику.
+ * 
+ * Сначала она находит сектор, которому принадлежит точка, обрабатывает случаей, что если 
+ * точка - последняя. И если ориентация искомой точки относительно сектора, которому 
+ * она принадлежит - правая, то точка внутри этого сектора, иначе она лежит вне этого сектора.
+ * 
+ * ВАЖНО!!! В нашем случае все зависит от обхода вершин. В нашем случае обход - против часовой стрелки.
+ * В ином случае ориентация должна быть левой.
+ */
+ bool LinealAlgebra::PointInConvexPolygon(std::vector<Point2D>::const_iterator start,
+                            std::vector<Point2D>::const_iterator end, 
+                            Point2D point){
+    int left = LinealAlgebra::FindSector(point, start, end);
+    int right = (left == std::distance(start, end) - 1) ? 0 : left + 1;
+
+    if(LinealAlgebra::orientation(*(start + left), *(start + right), point) == LinealAlgebra::Orientations::Right)
+        return true;
+
+    return false;
+
+}
+
+/**
+ * @brief Данная функция получает на вход точку, и находит среди секторов выпукого многоу
+ * гольника сектор, коему принадлежит точка.
+ * 
+ * Поиск сектора происходит при помощи бинарного поиска. Мы знаем что многоугольник выпуклый,
+ * таким образом все его вершины отсортированы относительно угла полярной системы координат.
+ * Сравнение происходит при помощи псевдо скалярного произведения, если оно больше нуля, 
+ * значит мы перескачили сектор и нужно идти назад. Те мы ишем последнюю точку, такую что её 
+ * псевдо скалярное произведение меньше нуля, а псевдо скалярное произведение следующей точки 
+ * больше нуля.
+ * 
+ * В итоге возвращяется индекс левой вершины ребра.
+ * 
+ * partition_point — это функция которая находит первый элемент в отсортированном диапазоне, не удовлетворяющий заданному условию 
+ */
+int LinealAlgebra::FindSector(Point2D point,
+                std::vector<Point2D>::const_iterator start, 
+                std::vector<Point2D>::const_iterator end){
+    Point2D base = Point2D(0,0);     
+                                                           
+    auto it = std::partition_point(start, end,
+        [&](const Point2D p) {
+            return LinealAlgebra::pscalar(p - base, point - base) >= 0;
+        }
+    );
+
+    return static_cast<int>(std::distance(start, it)) - 1;
 }
