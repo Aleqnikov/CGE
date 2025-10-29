@@ -60,6 +60,8 @@
     "concepts": "cpp",
     "__tree": "cpp",
     "set": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "numeric": "cpp",
+    "algorithm": "cpp"
   }
 }

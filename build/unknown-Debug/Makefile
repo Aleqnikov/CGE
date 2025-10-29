@@ -54,13 +54,13 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../../main.cpp \
 		../../mainwindow.cpp \
-		../../Engine/Algebra/LinealAlgebra.cpp \
-		../../Engine/Algebra/Point2D.cpp \
-		../../Engine/Geometry/Polygons/ConvexPolygon.cpp \
-		../../Engine/Geometry/Polygons/Polygon.cpp \
-		../../Engine/Geometry/Polygons/RegularPolygon.cpp \
-		../../Engine/Geometry/Mesh/CreateMesh.cpp \
-		../../Engine/Geometry/Polygons/StarPolygon.cpp moc_MyGraphicsView.cpp \
+		../../src/CGE/Algebra/LinealAlgebra.cpp \
+		../../src/CGE/Algebra/Point2D.cpp \
+		../../src/CGE/Geometry/Polygons/ConvexPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/RegularPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/StarPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.cpp moc_MyGraphicsView.cpp \
 		moc_MyGraphicsViewHull.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = main.o \
@@ -68,10 +68,10 @@ OBJECTS       = main.o \
 		LinealAlgebra.o \
 		Point2D.o \
 		ConvexPolygon.o \
-		Polygon.o \
 		RegularPolygon.o \
-		CreateMesh.o \
 		StarPolygon.o \
+		PolygonAlgorithms.o \
+		HullAlgorithms.o \
 		moc_MyGraphicsView.o \
 		moc_MyGraphicsViewHull.o \
 		moc_mainwindow.o
@@ -292,21 +292,23 @@ DIST          = /opt/homebrew/Cellar/qt@5/5.15.17/mkspecs/features/spec_pre.prf 
 		../../MyGraphicsViewHull.h \
 		../../mainwindow.h \
 		../../ProjectInfo.h \
-		../../Engine/Algebra/LinealAlgebra.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Geometry/Polygons/ConvexPolygon.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Geometry/Polygons/RegularPolygon.h \
-		../../Engine/Geometry/Mesh/CreateMesh.h \
-		../../Engine/Geometry/Polygons/StarPolygon.h ../../main.cpp \
+		../../src/CGE/Algebra/LinealAlgebra.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Geometry/Polygons/ConvexPolygon.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/RegularPolygon.h \
+		../../src/CGE/Geometry/Polygons/StarPolygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Geometry/Hull/Hull.h ../../main.cpp \
 		../../mainwindow.cpp \
-		../../Engine/Algebra/LinealAlgebra.cpp \
-		../../Engine/Algebra/Point2D.cpp \
-		../../Engine/Geometry/Polygons/ConvexPolygon.cpp \
-		../../Engine/Geometry/Polygons/Polygon.cpp \
-		../../Engine/Geometry/Polygons/RegularPolygon.cpp \
-		../../Engine/Geometry/Mesh/CreateMesh.cpp \
-		../../Engine/Geometry/Polygons/StarPolygon.cpp
+		../../src/CGE/Algebra/LinealAlgebra.cpp \
+		../../src/CGE/Algebra/Point2D.cpp \
+		../../src/CGE/Geometry/Polygons/ConvexPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/RegularPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/StarPolygon.cpp \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.cpp
 QMAKE_TARGET  = CDE
 DESTDIR       = 
 TARGET        = CDE.app/Contents/MacOS/CDE
@@ -796,8 +798,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/homebrew/Cellar/qt@5/5.15.17/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../MyGraphicsView.h ../../MyGraphicsViewHull.h ../../mainwindow.h ../../ProjectInfo.h ../../Engine/Algebra/LinealAlgebra.h ../../Engine/Algebra/Point2D.h ../../Engine/Geometry/Polygons/ConvexPolygon.h ../../Engine/Geometry/Polygons/Polygon.h ../../Engine/Geometry/Polygons/RegularPolygon.h ../../Engine/Geometry/Mesh/CreateMesh.h ../../Engine/Geometry/Polygons/StarPolygon.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../mainwindow.cpp ../../Engine/Algebra/LinealAlgebra.cpp ../../Engine/Algebra/Point2D.cpp ../../Engine/Geometry/Polygons/ConvexPolygon.cpp ../../Engine/Geometry/Polygons/Polygon.cpp ../../Engine/Geometry/Polygons/RegularPolygon.cpp ../../Engine/Geometry/Mesh/CreateMesh.cpp ../../Engine/Geometry/Polygons/StarPolygon.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../MyGraphicsView.h ../../MyGraphicsViewHull.h ../../mainwindow.h ../../ProjectInfo.h ../../src/CGE/Algebra/LinealAlgebra.h ../../src/CGE/Algebra/Point2D.h ../../src/CGE/Geometry/Polygons/ConvexPolygon.h ../../src/CGE/Geometry/Polygons/Polygon.h ../../src/CGE/Geometry/Polygons/RegularPolygon.h ../../src/CGE/Geometry/Polygons/StarPolygon.h ../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h ../../src/CGE/Geometry/Hull/HullAlgorithms.h ../../src/CGE/Geometry/Hull/Hull.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../main.cpp ../../mainwindow.cpp ../../src/CGE/Algebra/LinealAlgebra.cpp ../../src/CGE/Algebra/Point2D.cpp ../../src/CGE/Geometry/Polygons/ConvexPolygon.cpp ../../src/CGE/Geometry/Polygons/RegularPolygon.cpp ../../src/CGE/Geometry/Polygons/StarPolygon.cpp ../../src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp ../../src/CGE/Geometry/Hull/HullAlgorithms.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -843,9 +845,12 @@ moc_MyGraphicsView.cpp: ../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPainter \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpainter.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsTextItem \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsitem.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
 		moc_predefs.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc
 	/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc $(DEFINES) --include /Users/ivanalejnikov/CLionProjects/CGEPR/CGE/build/unknown-Debug/moc_predefs.h -I/opt/homebrew/Cellar/qt@5/5.15.17/mkspecs/macx-clang -I/Users/ivanalejnikov/CLionProjects/CGEPR/CGE -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/opt/homebrew/Cellar/qt@5/5.15.17/lib ../../MyGraphicsView.h -o moc_MyGraphicsView.cpp
@@ -853,11 +858,14 @@ moc_MyGraphicsView.cpp: ../../MyGraphicsView.h \
 moc_MyGraphicsViewHull.cpp: ../../MyGraphicsViewHull.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsView \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsview.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QWheelEvent \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QMouseEvent \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPainter \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpainter.h \
+		../../src/CGE/Geometry/Hull/Hull.h \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Algebra/LinealAlgebra.h \
 		moc_predefs.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc
 	/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc $(DEFINES) --include /Users/ivanalejnikov/CLionProjects/CGEPR/CGE/build/unknown-Debug/moc_predefs.h -I/opt/homebrew/Cellar/qt@5/5.15.17/mkspecs/macx-clang -I/Users/ivanalejnikov/CLionProjects/CGEPR/CGE -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/opt/homebrew/Cellar/qt@5/5.15.17/lib ../../MyGraphicsViewHull.h -o moc_MyGraphicsViewHull.cpp
@@ -865,34 +873,26 @@ moc_MyGraphicsViewHull.cpp: ../../MyGraphicsViewHull.h \
 moc_mainwindow.cpp: ../../mainwindow.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QMainWindow \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QPushButton \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qpushbutton.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QHBoxLayout \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qboxlayout.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QLabel \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qlabel.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qstackedwidget.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QSpinBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qspinbox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QComboBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qcombobox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
+		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsView \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsview.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPen \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpen.h \
-		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QMouseEvent \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPainter \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpainter.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsTextItem \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsitem.h \
 		../../MyGraphicsViewHull.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QWheelEvent \
+		../../src/CGE/Geometry/Hull/Hull.h \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Algebra/LinealAlgebra.h \
 		moc_predefs.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc
 	/opt/homebrew/Cellar/qt@5/5.15.17/bin/moc $(DEFINES) --include /Users/ivanalejnikov/CLionProjects/CGEPR/CGE/build/unknown-Debug/moc_predefs.h -I/opt/homebrew/Cellar/qt@5/5.15.17/mkspecs/macx-clang -I/Users/ivanalejnikov/CLionProjects/CGEPR/CGE -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers -I/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -F/opt/homebrew/Cellar/qt@5/5.15.17/lib ../../mainwindow.h -o moc_mainwindow.cpp
@@ -923,34 +923,26 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 main.o: ../../main.cpp ../../mainwindow.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QMainWindow \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QPushButton \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qpushbutton.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QHBoxLayout \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qboxlayout.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QLabel \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qlabel.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qstackedwidget.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QSpinBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qspinbox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QComboBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qcombobox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
+		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsView \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsview.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPen \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpen.h \
-		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QMouseEvent \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPainter \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpainter.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsTextItem \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsitem.h \
 		../../MyGraphicsViewHull.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QWheelEvent \
+		../../src/CGE/Geometry/Hull/Hull.h \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Algebra/LinealAlgebra.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QApplication \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
@@ -958,80 +950,72 @@ main.o: ../../main.cpp ../../mainwindow.h \
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QMainWindow \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QPushButton \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qpushbutton.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QHBoxLayout \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qboxlayout.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QLabel \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qlabel.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qstackedwidget.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QSpinBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qspinbox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QComboBox \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qcombobox.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
+		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsView \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsview.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPen \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpen.h \
-		../../MyGraphicsView.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QMouseEvent \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qevent.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QPainter \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/qpainter.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h \
-		../../MyGraphicsViewHull.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtGui.framework/Headers/QWheelEvent \
-		ui_mainwindow.h \
-		../../Engine/Geometry/Polygons/ConvexPolygon.h \
-		../../Engine/Geometry/Polygons/RegularPolygon.h \
-		../../Engine/Geometry/Polygons/StarPolygon.h \
-		../../Engine/Geometry/Mesh/CreateMesh.h \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsPolygonItem \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsScene \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsTextItem \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qgraphicsitem.h \
+		../../MyGraphicsViewHull.h \
+		../../src/CGE/Geometry/Hull/Hull.h \
+		../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Algebra/LinealAlgebra.h \
 		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QVBoxLayout \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers/QDebug \
-		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtCore.framework/Headers/qdebug.h
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QLabel \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qlabel.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QPushButton \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QSpinBox \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qspinbox.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QComboBox \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/qcombobox.h \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsPolygonItem \
+		/opt/homebrew/Cellar/qt@5/5.15.17/lib/QtWidgets.framework/Headers/QGraphicsEllipseItem \
+		../../src/CGE/Geometry/Polygons/ConvexPolygon.h \
+		../../src/CGE/Geometry/Polygons/RegularPolygon.h \
+		../../src/CGE/Geometry/Polygons/StarPolygon.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
-LinealAlgebra.o: ../../Engine/Algebra/LinealAlgebra.cpp ../../Engine/Algebra/LinealAlgebra.h \
-		../../Engine/Algebra/Point2D.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o LinealAlgebra.o ../../Engine/Algebra/LinealAlgebra.cpp
+LinealAlgebra.o: ../../src/CGE/Algebra/LinealAlgebra.cpp ../../src/CGE/Algebra/LinealAlgebra.h \
+		../../src/CGE/Algebra/Point2D.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o LinealAlgebra.o ../../src/CGE/Algebra/LinealAlgebra.cpp
 
-Point2D.o: ../../Engine/Algebra/Point2D.cpp ../../Engine/Algebra/Point2D.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Point2D.o ../../Engine/Algebra/Point2D.cpp
+Point2D.o: ../../src/CGE/Algebra/Point2D.cpp ../../src/CGE/Algebra/Point2D.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Point2D.o ../../src/CGE/Algebra/Point2D.cpp
 
-ConvexPolygon.o: ../../Engine/Geometry/Polygons/ConvexPolygon.cpp ../../Engine/Geometry/Polygons/ConvexPolygon.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ConvexPolygon.o ../../Engine/Geometry/Polygons/ConvexPolygon.cpp
+ConvexPolygon.o: ../../src/CGE/Geometry/Polygons/ConvexPolygon.cpp ../../src/CGE/Geometry/Polygons/ConvexPolygon.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ConvexPolygon.o ../../src/CGE/Geometry/Polygons/ConvexPolygon.cpp
 
-Polygon.o: ../../Engine/Geometry/Polygons/Polygon.cpp ../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Polygon.o ../../Engine/Geometry/Polygons/Polygon.cpp
+RegularPolygon.o: ../../src/CGE/Geometry/Polygons/RegularPolygon.cpp ../../src/CGE/Geometry/Polygons/RegularPolygon.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o RegularPolygon.o ../../src/CGE/Geometry/Polygons/RegularPolygon.cpp
 
-RegularPolygon.o: ../../Engine/Geometry/Polygons/RegularPolygon.cpp ../../Engine/Geometry/Polygons/RegularPolygon.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o RegularPolygon.o ../../Engine/Geometry/Polygons/RegularPolygon.cpp
+StarPolygon.o: ../../src/CGE/Geometry/Polygons/StarPolygon.cpp ../../src/CGE/Geometry/Polygons/StarPolygon.h \
+		../../src/CGE/Geometry/Polygons/Polygon.h \
+		../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o StarPolygon.o ../../src/CGE/Geometry/Polygons/StarPolygon.cpp
 
-CreateMesh.o: ../../Engine/Geometry/Mesh/CreateMesh.cpp ../../Engine/Geometry/Mesh/CreateMesh.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CreateMesh.o ../../Engine/Geometry/Mesh/CreateMesh.cpp
+PolygonAlgorithms.o: ../../src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp ../../src/CGE/Geometry/Polygons/PolygonAlgorithms.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PolygonAlgorithms.o ../../src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp
 
-StarPolygon.o: ../../Engine/Geometry/Polygons/StarPolygon.cpp ../../Engine/Geometry/Polygons/StarPolygon.h \
-		../../Engine/Geometry/Polygons/Polygon.h \
-		../../Engine/Algebra/Point2D.h \
-		../../Engine/Algebra/LinealAlgebra.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o StarPolygon.o ../../Engine/Geometry/Polygons/StarPolygon.cpp
+HullAlgorithms.o: ../../src/CGE/Geometry/Hull/HullAlgorithms.cpp ../../src/CGE/Geometry/Hull/HullAlgorithms.h \
+		../../src/CGE/Algebra/Point2D.h \
+		../../src/CGE/Algebra/LinealAlgebra.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o HullAlgorithms.o ../../src/CGE/Geometry/Hull/HullAlgorithms.cpp
 
 moc_MyGraphicsView.o: moc_MyGraphicsView.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MyGraphicsView.o moc_MyGraphicsView.cpp

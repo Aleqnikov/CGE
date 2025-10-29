@@ -2,44 +2,36 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QStackedWidget>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QPen>
+#include <memory>
 
+#include "./src/CGE/Geometry/Polygons/Polygon.h"
 #include "MyGraphicsView.h"
 #include "MyGraphicsViewHull.h"
-
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-    void FirstPage();
-    void GetDataInPolygon();
-    void PolygonInModeDraw(std::shared_ptr<Polygon>);
-    void GetDataConvexHull();
-    void HullDraw(std::vector<Point2D>, std::vector<Point2D>);
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override = default;
 
 private:
-    QStackedWidget *stackedWidget;
-    Ui::MainWindow *ui;
+    enum class Page {
+        First = 0,
+        Input = 1,
+        Graphics = 2
+    };
 
+    void createFirstPage();
+    void showPolygonInputPage();
+    void showConvexHullInputPage();
 
+    void drawPolygonMode(std::shared_ptr<Polygon> polygon);
+    void drawHull(const std::vector<Point2D> &points, const std::vector<Point2D> &hull);
+
+    // stacked widget для переключения страниц
+    QStackedWidget *stackedWidget = nullptr;
 };
+
 #endif // MAINWINDOW_H

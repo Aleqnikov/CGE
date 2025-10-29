@@ -3,8 +3,11 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QGraphicsScene>
+#include <QGraphicsTextItem>
 #include <memory>
-#include "./Engine/Geometry/Polygons/Polygon.h"
+
+#include "./src/CGE/Geometry/Polygons/Polygon.h"
 
 class MyGraphicsView : public QGraphicsView {
     Q_OBJECT
@@ -138,31 +141,46 @@ protected:
     }
 
     void keyPressEvent(QKeyEvent *event) override {
-        if (event->key() == Qt::Key_Space) {
+    if (event->key() == Qt::Key_Space && polygon_ && scene()) {
 
+        polygon_->Regenerate();
 
-            polygon_->Regenerate();
+        // QPolygonF для сцены
+        QPolygonF qpoly;
+        for (const auto &v : polygon_->vertices)
+            qpoly << QPointF(v.x_, v.y_);
 
-            // QPolygonF для сцены
-            QPolygonF qpoly;
-            for (const auto &v : polygon_->vertices)
-                qpoly << QPointF(v.x, v.y);
+        // перерисовка сцены
+        scene()->clear();
 
-            // перерисовка сцены
-            scene()->clear();
+        // КРИТИЧНО: используем cosmetic pen
+        QPen pen(Qt::green);
+        pen.setWidth(0);
+        pen.setCosmetic(true);
 
-            // КРИТИЧНО: используем cosmetic pen (не масштабируется)
-            QPen pen(Qt::green);
-            pen.setWidth(0); // cosmetic pen - всегда 1 пиксель
-            pen.setCosmetic(true);
+        scene()->addPolygon(qpoly, pen);
 
-            scene()->addPolygon(qpoly, pen);
+        // ==== Подписи индексов вершин ====
+        QFont font;
+        font.setPointSize(8);
+        font.setBold(true);
 
-            return;
-
-            QGraphicsView::keyPressEvent(event);
+        for (int i = 0; i < polygon_->vertices.size(); ++i) {
+            const auto &v = polygon_->vertices[i];
+            QGraphicsTextItem *text = scene()->addText(QString::number(i), font);
+            text->setDefaultTextColor(Qt::yellow);
+            text->setPos(v.x_, v.y_);
+            text->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
         }
+        // ==================================
+
+        return;
     }
+
+    // Остальное обрабатываем стандартно
+    QGraphicsView::keyPressEvent(event);
+}
+
 
 private:
     // Адаптивное включение антиалиасинга

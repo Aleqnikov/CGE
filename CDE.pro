@@ -11,26 +11,29 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    Engine/Algebra/LinealAlgebra.cpp \
-    Engine/Algebra/Point2D.cpp \
-    Engine/Geometry/Polygons/ConvexPolygon.cpp \
-    Engine/Geometry/Polygons/Polygon.cpp \
-    Engine/Geometry/Polygons/RegularPolygon.cpp \
-    Engine/Geometry/Mesh/CreateMesh.cpp \
-    Engine/Geometry/Polygons/StarPolygon.cpp
+    src/CGE/Algebra/LinealAlgebra.cpp \
+    src/CGE/Algebra/Point2D.cpp \
+    src/CGE/Geometry/Polygons/ConvexPolygon.cpp \
+    src/CGE/Geometry/Polygons/RegularPolygon.cpp \
+    src/CGE/Geometry/Polygons/StarPolygon.cpp \
+    src/CGE/Geometry/Polygons/PolygonAlgorithms.cpp \
+    src/CGE/Geometry/Hull/HullAlgorithms.cpp \
 
 HEADERS += \
     MyGraphicsView.h \
     MyGraphicsViewHull.h \
     mainwindow.h \
     ProjectInfo.h \
-    Engine/Algebra/LinealAlgebra.h \
-    Engine/Algebra/Point2D.h \
-    Engine/Geometry/Polygons/ConvexPolygon.h \
-    Engine/Geometry/Polygons/Polygon.h \
-    Engine/Geometry/Polygons/RegularPolygon.h \
-    Engine/Geometry/Mesh/CreateMesh.h \
-    Engine/Geometry/Polygons/StarPolygon.h
+    src/CGE/Algebra/LinealAlgebra.h \
+    src/CGE/Algebra/Point2D.h \
+    src/CGE/Geometry/Polygons/ConvexPolygon.h \
+    src/CGE/Geometry/Polygons/Polygon.h \
+    src/CGE/Geometry/Polygons/RegularPolygon.h \
+    src/CGE/Geometry/Polygons/StarPolygon.h \
+    src/CGE/Geometry/Polygons/PolygonAlgorithms.h \
+    src/CGE/Geometry/Hull/HullAlgorithms.h \
+    src/CGE/Geometry/Hull/Hull.h
+
 
 FORMS += \
     mainwindow.ui

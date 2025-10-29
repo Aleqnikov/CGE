@@ -1,240 +1,246 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
-#include "./Engine/Geometry/Polygons/Polygon.h"
-#include "./Engine/Geometry/Polygons/ConvexPolygon.h"
-#include "./Engine/Geometry/Polygons/RegularPolygon.h"
-#include "./Engine/Geometry/Polygons/StarPolygon.h"
-#include "./Engine/Geometry/Mesh/CreateMesh.h"
-
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QComboBox>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
-#include <QVBoxLayout>
-#include <QDebug>
+#include <QGraphicsEllipseItem>
+
+
+#include "./src/CGE/Geometry/Polygons/Polygon.h"
+#include "./src/CGE/Geometry/Polygons/PolygonAlgorithms.h"
+#include "./src/CGE/Geometry/Polygons/ConvexPolygon.h"
+#include "./src/CGE/Geometry/Polygons/RegularPolygon.h"
+#include "./src/CGE/Geometry/Polygons/StarPolygon.h"
+#include "./src/CGE/Geometry/Hull/Hull.h"
+#include "./src/CGE/Geometry/Hull/HullAlgorithms.h"
+
+#include "MyGraphicsView.h"
+#include "MyGraphicsViewHull.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    // Создаём QStackedWidget и делаем его центральным виджетом
     stackedWidget = new QStackedWidget(this);
     setCentralWidget(stackedWidget);
-
-    // Создаём первую страницу
-    FirstPage();
+    createFirstPage();
 }
 
-MainWindow::~MainWindow()
+void MainWindow::createFirstPage()
 {
-    delete ui;
-}
-
-
-void MainWindow::FirstPage()
-{
-    QWidget *container = new QWidget;
+    // container будет дочерним для stackedWidget
+    QWidget *container = new QWidget(stackedWidget);
     QVBoxLayout *layout = new QVBoxLayout(container);
 
-    QPushButton *dot_in_polygon = new QPushButton("Определение нахождения точки внутри многоугольника");
-    QPushButton *create_convex_hull = new QPushButton("Построение выпуклой оболочки.");
+    auto *dotBtn = new QPushButton(tr("Определение нахождения точки внутри многоугольника"), container);
+    auto *hullBtn = new QPushButton(tr("Построение выпуклой оболочки."), container);
 
-    layout->addWidget(dot_in_polygon);
-    layout->addWidget(create_convex_hull);
-
+    layout->addWidget(dotBtn);
+    layout->addWidget(hullBtn);
     container->setLayout(layout);
-    stackedWidget->addWidget(container);
 
-    connect(dot_in_polygon, &QPushButton::clicked, [this]() {
-        GetDataInPolygon();
-        stackedWidget->setCurrentIndex(1);
+    stackedWidget->addWidget(container); // индекс Page::First
+
+    // Лямбда-обработчики, не меняющие логику
+    connect(dotBtn, &QPushButton::clicked, this, [this]() {
+        showPolygonInputPage();
+        stackedWidget->setCurrentIndex(static_cast<int>(Page::Input));
     });
 
-    connect(create_convex_hull, &QPushButton::clicked, [this]() {
-        GetDataConvexHull();
-        stackedWidget->setCurrentIndex(1);
+    connect(hullBtn, &QPushButton::clicked, this, [this]() {
+        showConvexHullInputPage();
+        stackedWidget->setCurrentIndex(static_cast<int>(Page::Input));
     });
 }
 
-void MainWindow::GetDataConvexHull() {
-    QWidget *page = new QWidget;
+void MainWindow::showConvexHullInputPage()
+{
+    QWidget *page = new QWidget(stackedWidget);
     QVBoxLayout *mainLayout = new QVBoxLayout(page);
 
-    QLabel *count_peacs = new QLabel("Введите количество точек на которых хотите посторить выпуклую оболочку");
-    QSpinBox *spin = new QSpinBox;
+    QLabel *countLabel = new QLabel(tr("Введите количество точек для построения выпуклой оболочки"), page);
+    QSpinBox *spin = new QSpinBox(page);
     spin->setRange(10, 10000);
-    spin->setValue(10);
+    spin->setValue(100);
 
-    QLabel *mode_of_hull = new QLabel("Выберите вид алгоритма постоения выпуклой оболочки");
-    QComboBox *setModStat = new QComboBox;
-    setModStat->addItems({"Jarvis", "Andrews", "Implemential"});
+    QLabel *modeLabel = new QLabel(tr("Выберите алгоритм построения выпуклой оболочки"), page);
+    QComboBox *combo = new QComboBox(page);
+    combo->addItems({"Jarvis", "Andrews", "Implemential"});
 
-    QPushButton *confirm = new QPushButton("Подтвердить");
+    QPushButton *confirm = new QPushButton(tr("Подтвердить"), page);
 
-    connect(confirm, &QPushButton::clicked, [this, spin, setModStat]() {
-        int n = spin->value();
-
-        std::shared_ptr<Mesh> Hull;
-
-        Hull = std::make_shared<Mesh>(n);
-
-        std::vector<Point2D> result;
-        if(setModStat->currentText() == "Jarvis")
-            result = Hull->JarvisMarch();
-        else if(setModStat->currentText() == "Andrews")
-            result = Hull->Andrews();
-        else
-            result = Hull->Implemential();
-
-        HullDraw(Hull->mesh, result);
-
-    });
-
-    mainLayout->addWidget(count_peacs);
+    mainLayout->addWidget(countLabel);
     mainLayout->addWidget(spin);
-    mainLayout->addWidget(mode_of_hull);
-    mainLayout->addWidget(setModStat);
+    mainLayout->addWidget(modeLabel);
+    mainLayout->addWidget(combo);
     mainLayout->addWidget(confirm);
-
     page->setLayout(mainLayout);
     stackedWidget->addWidget(page);
+
+    connect(confirm, &QPushButton::clicked, this, [this, spin, combo]() {
+        const int n = spin->value();
+        std::shared_ptr<Hull> hullPtr;
+
+        const QString choice = combo->currentText();
+
+        // Выбираем алгоритм построения
+        if (choice == "Jarvis")
+            hullPtr = std::make_shared<Hull>(n, HullAlgorithms::JarvisMarch);
+        else if (choice == "Andrews")
+            hullPtr = std::make_shared<Hull>(n, HullAlgorithms::Andrews);
+        else
+            hullPtr = std::make_shared<Hull>(n, HullAlgorithms::Andrews); // default
+
+        // Создаём сцену и виджет для отображения оболочки
+        QGraphicsScene *scene = new QGraphicsScene(this);
+        auto *view = new MyGraphicsViewHull(hullPtr);
+        view->setSceneAndInit(scene);
+
+        // Добавляем на страницу отображения (Page::Graphics)
+        QWidget *graphicsPage = new QWidget();
+        QVBoxLayout *layout = new QVBoxLayout(graphicsPage);
+        layout->addWidget(view);
+        graphicsPage->setLayout(layout);
+        stackedWidget->addWidget(graphicsPage);
+
+        // Переключаемся на страницу с графикой
+        stackedWidget->setCurrentWidget(graphicsPage);
+    });
 }
 
 
-void MainWindow::HullDraw(std::vector<Point2D> point, std::vector<Point2D> hull) {
-    // Преобразуем hull в QPolygonF
+void MainWindow::showPolygonInputPage()
+{
+    QWidget *page = new QWidget(stackedWidget);
+    QVBoxLayout *mainLayout = new QVBoxLayout(page);
+
+    QLabel *countLabel = new QLabel(tr("Введите количество вершин многоугольника"), page);
+    QSpinBox *spin = new QSpinBox(page);
+    spin->setRange(3, 10000);
+    spin->setValue(10);
+
+    QLabel *modeLabel = new QLabel(tr("Выберите вид многоугольника."), page);
+    QComboBox *combo = new QComboBox(page);
+    combo->addItems({"convex", "star", "ordinary"});
+
+    QPushButton *confirm = new QPushButton(tr("Подтвердить"), page);
+
+    mainLayout->addWidget(countLabel);
+    mainLayout->addWidget(spin);
+    mainLayout->addWidget(modeLabel);
+    mainLayout->addWidget(combo);
+    mainLayout->addWidget(confirm);
+    page->setLayout(mainLayout);
+    stackedWidget->addWidget(page);
+
+    connect(confirm, &QPushButton::clicked, this, [this, spin, combo]() {
+        const int n = spin->value();
+        std::shared_ptr<Polygon> polygon;
+
+        const QString choice = combo->currentText();
+        if (choice == "convex")
+            polygon = std::make_shared<ConvexPolygon>(n, PolygonAlgorithms::pointInStarPolygon);
+        else if (choice == "star")
+            polygon = std::make_shared<StarPolygon>(n, PolygonAlgorithms::pointInStarPolygon2);
+        else
+            polygon = std::make_shared<RegularPolygon>(n, PolygonAlgorithms::pointInRegularPolygon);
+
+        drawPolygonMode(polygon);
+        stackedWidget->setCurrentIndex(static_cast<int>(Page::Graphics));
+    });
+}
+
+void MainWindow::drawPolygonMode(std::shared_ptr<Polygon> polygon)
+{
+    // Преобразуем в QPolygonF
     QPolygonF qpoly;
-    qpoly.reserve(hull.size());
-    for (const auto &v : hull) {
-        qpoly << QPointF(v.x, v.y);
+    qpoly.reserve(polygon->vertices.size());
+    for (const auto &v : polygon->vertices) {
+        qpoly << QPointF(v.x_, v.y_);
     }
 
-    // Создаём сцену и view
+    // Сцена и view
     QGraphicsScene *scene = new QGraphicsScene(this);
-    MyGraphicsViewHull *view = new MyGraphicsViewHull();
-    view->setFocusPolicy(Qt::StrongFocus);
+    MyGraphicsView *view = new MyGraphicsView(polygon, nullptr);
     view->setSceneAndInit(scene);
 
-    // Фон
     scene->setBackgroundBrush(QBrush(Qt::black));
 
-    // Полигон зелёным (cosmetic pen - не масштабируется)
     QPen pen(Qt::green);
-    pen.setWidth(0); // cosmetic pen
+    pen.setWidth(0);
     pen.setCosmetic(true);
-    QGraphicsPolygonItem *polyItem = scene->addPolygon(qpoly, pen, QBrush());
-    polyItem->setFlag(QGraphicsItem::ItemIsSelectable, false);
-    polyItem->setFlag(QGraphicsItem::ItemIsMovable, false);
-    polyItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
-    // Рисуем точки красным, постоянного размера в пикселях
-    QBrush redBrush(Qt::red);
-    QPen redPen(Qt::NoPen);
-    double radius = 2.5; // радиус в пикселях
+    // Рисуем сам полигон
+    scene->addPolygon(qpoly, pen);
 
-    for (const auto &p : point) {
-        QGraphicsEllipseItem *pointItem = scene->addEllipse(
-            -radius, -radius,
-            radius * 2, radius * 2,
-            redPen,
-            redBrush
-            );
-        pointItem->setPos(p.x, p.y);
-        pointItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
-        pointItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    // ==== Подписи индексов вершин ====
+    QFont font;
+    font.setPointSize(8);
+    font.setBold(true);
+
+    for (int i = 0; i < polygon->vertices.size(); ++i) {
+        const auto &v = polygon->vertices[i];
+
+        QGraphicsTextItem *text = scene->addText(QString::number(i), font);
+        text->setDefaultTextColor(Qt::yellow);
+        text->setPos(v.x_, v.y_); // без смещения!
+        text->setFlag(QGraphicsItem::ItemIgnoresTransformations, true); // не масштабируется при зуме
     }
+    // ==================================
 
-    // Создаём виджет с view
-    QWidget *graphicsPage = new QWidget;
+    QWidget *graphicsPage = new QWidget(stackedWidget);
     QVBoxLayout *layout = new QVBoxLayout(graphicsPage);
     layout->addWidget(view);
     graphicsPage->setLayout(layout);
 
     stackedWidget->addWidget(graphicsPage);
-    stackedWidget->setCurrentIndex(2);
     view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 
 
-void MainWindow::GetDataInPolygon()
+
+void MainWindow::drawHull(const std::vector<Point2D> &points, const std::vector<Point2D> &hull)
 {
-    QWidget *page = new QWidget;
-    QVBoxLayout *mainLayout = new QVBoxLayout(page);
-
-    QLabel *count_peacs = new QLabel("Введите количество вершин многоугольника");
-    QSpinBox *spin = new QSpinBox;
-    spin->setRange(3, 10000);
-    spin->setValue(10);
-
-    QLabel *mode_of_polygon = new QLabel("Выберите вид многоугольника.");
-    QComboBox *setModStat = new QComboBox;
-    setModStat->addItems({"convex", "star", "ordinary"});
-
-    QPushButton *confirm = new QPushButton("Подтвердить");
-
-    connect(confirm, &QPushButton::clicked, [this, spin, setModStat]() {
-        int n = spin->value();
-
-        std::shared_ptr<Polygon> polygon;
-
-        if(setModStat->currentText() == "convex")
-            polygon = std::make_shared<ConvexPolygon>(n);
-
-        if(setModStat->currentText() == "star")
-            polygon = std::make_shared<StarPolygon>(n);
-
-        if(setModStat->currentText() == "ordinary")
-            polygon = std::make_shared<RegularPolygon>(n);
-
-        PolygonInModeDraw(polygon);
-
-    });
-
-    mainLayout->addWidget(count_peacs);
-    mainLayout->addWidget(spin);
-    mainLayout->addWidget(mode_of_polygon);
-    mainLayout->addWidget(setModStat);
-    mainLayout->addWidget(confirm);
-
-    page->setLayout(mainLayout);
-    stackedWidget->addWidget(page);
-}
-
-void MainWindow::PolygonInModeDraw(std::shared_ptr<Polygon> polygon){
-    // Преобразуем в QPolygonF
     QPolygonF qpoly;
-    qpoly.reserve(polygon->vertices.size()); // резервируем память
-    for (const auto &v : polygon->vertices) {
-        qpoly << QPointF(v.x, v.y);
-    }
+    qpoly.reserve(hull.size());
+    for (const auto &v : hull) qpoly << QPointF(v.x_, v.y_);
 
-    // Создаём сцену и view
     QGraphicsScene *scene = new QGraphicsScene(this);
-    MyGraphicsView *view = new MyGraphicsView(polygon);
-    view->setFocusPolicy(Qt::StrongFocus);
+    MyGraphicsViewHull *view = new MyGraphicsViewHull(nullptr);
     view->setSceneAndInit(scene);
-
-    // Фон
     scene->setBackgroundBrush(QBrush(Qt::black));
 
-    // КРИТИЧНО: используем cosmetic pen (не масштабируется)
-    QPen pen(Qt::green);
-    pen.setWidth(0);                // cosmetic pen - всегда 1 пиксель
-    pen.setCosmetic(true);
+    QPen greenPen(Qt::green);
+    greenPen.setWidth(0);
+    greenPen.setCosmetic(true);
 
-    QGraphicsPolygonItem *polyItem = scene->addPolygon(qpoly, pen, QBrush());
-
-
+    // Полигон оболочки (outline)
+    QGraphicsPolygonItem *polyItem = scene->addPolygon(qpoly, greenPen, QBrush());
     polyItem->setFlag(QGraphicsItem::ItemIsSelectable, false);
     polyItem->setFlag(QGraphicsItem::ItemIsMovable, false);
-
     polyItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
-    QWidget *graphicsPage = new QWidget;
+    // Точки
+    QBrush brush(Qt::red);
+    QPen noPen(Qt::NoPen);
+    constexpr double radius = 2.5;
+
+    for (const auto &p : points) {
+        QGraphicsEllipseItem *pt = scene->addEllipse(-radius, -radius, radius * 2, radius * 2, noPen, brush);
+        pt->setPos(p.x_, p.y_);
+        pt->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+        pt->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    }
+
+    QWidget *graphicsPage = new QWidget(stackedWidget);
     QVBoxLayout *layout = new QVBoxLayout(graphicsPage);
     layout->addWidget(view);
     graphicsPage->setLayout(layout);
 
     stackedWidget->addWidget(graphicsPage);
-    stackedWidget->setCurrentIndex(2);
-
     view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
