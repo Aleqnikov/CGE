@@ -46,6 +46,11 @@ public:
         *this = std::move(temp_hull); 
     }
 
+        // Возвращает исходный набор точек (меш)
+    std::vector<Point2D> GetAllPoints() const {
+        return hull_; // исходные точки, до применения create_hull_
+    }
+
 };
 
 

@@ -17,14 +17,13 @@ ConvexPolygon::ConvexPolygon(int count_vertices, InPolygonChecker checker_func) 
         vertices_uniq.insert(dist(gen));
     
 
-    
+
     for(auto angle : vertices_uniq)
         vertices.push_back(Point2D(
             count_vertices*std::cos(2* M_PI * angle / (2*count_vertices )), 
             count_vertices*std::sin(2* M_PI * angle / (2*count_vertices )))
     );
 
-    
 
     checker_func_ = checker_func;
 }

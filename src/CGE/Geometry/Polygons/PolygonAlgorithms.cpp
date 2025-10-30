@@ -44,14 +44,6 @@ int PolAlg::findSector(
         }
     );
 
-    auto it2 = std::partition_point(start, end,
-        [&](const Point2D p) {
-            return LinealAlgebra::pscalar(p - *start, point - *start) >= 0;
-        }
-    );
-
-    std::cout << "pb " << base.x_ << " " << base.y_ << " pb2 " << (*start).x_ << " " << (*start).y_ << std::endl;
-
     return static_cast<int>(std::distance(start, it)) - 1;
 }
 
@@ -72,7 +64,6 @@ bool PolAlg::pointInStarPolygon(Point2D point,
     }
     std::cout << left << " " << right << std::endl;
 
-    // Используем ориентацию для проверки принадлежности звездному многоугольнику
     if(LinealAlgebra::orientation(*(start + left), *(start + right), point) == LinealAlgebra::Orientations::Right)
         return true;
 
