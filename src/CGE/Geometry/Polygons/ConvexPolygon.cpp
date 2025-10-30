@@ -16,6 +16,8 @@ ConvexPolygon::ConvexPolygon(int count_vertices, InPolygonChecker checker_func) 
     while(vertices_uniq.size() != count_vertices)
         vertices_uniq.insert(dist(gen));
     
+
+    
     for(auto angle : vertices_uniq)
         vertices.push_back(Point2D(
             count_vertices*std::cos(2* M_PI * angle / (2*count_vertices )), 
