@@ -9,6 +9,10 @@ public:
     ConvexPolygon();
 
     void  Regenerate() override;
+
+    bool inPolygon(Point2D point) {
+        return checker_func_(point, vertices[0],  vertices.begin(), vertices.end());
+    }
 };
 
 

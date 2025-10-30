@@ -14,17 +14,14 @@ class Polygon {
 public:
     std::vector<Point2D> vertices;
 
-    // виртуальная функция с определением
     virtual void Regenerate() {};  
 
-    bool inPolygon(Point2D point){
-        return checker_func_(point, vertices.begin(), vertices.end());
-    }
-
+    virtual bool inPolygon(Point2D point) = 0;
     virtual ~Polygon() = default; 
 
 protected:
     using InPolygonChecker = std::function<bool(
+        Point2D,
         Point2D,
         std::vector<Point2D>::const_iterator,
         std::vector<Point2D>::const_iterator

@@ -8,63 +8,8 @@ using namespace LinAl;
 
 
 
-
-bool PolAlg::pointInStarPolygon(Point2D point,
-                                std::vector<Point2D>::const_iterator start,
-                                std::vector<Point2D>::const_iterator end) {
-
-   int n = std::distance(start, end);
-    if (n < 3) return false;
-    
-    // Бинарный поиск сектора для выпуклого многоугольника
-    int low = 0, high = n - 1;
-    
-    while (high - low > 1) {
-        int mid = (low + high) / 2;
-        Point2D ps = *(start + low);   // начальная точка
-        Point2D pm = *(start + mid);   // средняя точка
-        
-        Orientations orient = LinealAlgebra::orientation(ps, pm, point);
-        
-        if (orient == Orientations::Left) {
-            // if orientation(q, ps, pm) == left:
-            Point2D p0 = *(start + 0);
-            if (LinealAlgebra::orientation(p0, ps, point) != Orientations::Right && 
-                LinealAlgebra::orientation(p0, pm, point) == Orientations::Right) {
-                // take 1st half
-                high = mid;
-            } else {
-                // take 2nd half
-                low = mid;
-            }
-        } else {
-            // else:
-            Point2D p0 = *(start + 0);
-            if (LinealAlgebra::orientation(p0, ps, point) == Orientations::Right && 
-                LinealAlgebra::orientation(p0, pm, point) != Orientations::Right) {
-                // take 2nd half
-                low = mid;
-            } else {
-                // take 1st half
-                high = mid;
-            }
-        }
-    }
-    
-    // Проверяем принадлежность треугольнику
-    Point2D a = *(start + low);
-    Point2D b = *(start + high);
-    Point2D c = *(start + 0);
-    
-    Orientations o1 = LinealAlgebra::orientation(a, b, point);
-    Orientations o2 = LinealAlgebra::orientation(b, c, point);
-    Orientations o3 = LinealAlgebra::orientation(c, a, point);
-    
-    // Точка внутри если все ориентации одинаковы (все left или все right)
-    return (o1 == o2 && o2 == o3);
-}
-
 bool PolAlg::pointInRegularPolygon(Point2D point,
+                                    Point2D p2,
                                     std::vector<Point2D>::const_iterator start,
                                     std::vector<Point2D>::const_iterator end) {
                                 
@@ -86,30 +31,45 @@ bool PolAlg::pointInRegularPolygon(Point2D point,
 }
 
 
-
-int PolygonAlgorithms::findSector(
+int PolAlg::findSector(
     Point2D point,
+    Point2D base,
     std::vector<Point2D>::const_iterator start,
     std::vector<Point2D>::const_iterator end) 
-{
-    Point2D base = Point2D(0,0);     
-                                                           
+{  
+                                                            
     auto it = std::partition_point(start, end,
         [&](const Point2D p) {
             return LinealAlgebra::pscalar(p - base, point - base) >= 0;
         }
     );
 
+    auto it2 = std::partition_point(start, end,
+        [&](const Point2D p) {
+            return LinealAlgebra::pscalar(p - *start, point - *start) >= 0;
+        }
+    );
+
+    std::cout << "pb " << base.x_ << " " << base.y_ << " pb2 " << (*start).x_ << " " << (*start).y_ << std::endl;
+
     return static_cast<int>(std::distance(start, it)) - 1;
 }
 
-bool PolAlg::pointInStarPolygon2(Point2D point,
+
+
+
+bool PolAlg::pointInStarPolygon(Point2D point,
+                                Point2D base,
                                 std::vector<Point2D>::const_iterator start,
                                 std::vector<Point2D>::const_iterator end) {
 
-    int left = findSector(point, start, end);
+    int left = findSector(point, base, start, end);
     int right = (left == std::distance(start, end) - 1) ? 0 : left + 1;
 
+    if(left == -1){
+        right = 0;
+        left = std::distance(start, end) - 1;
+    }
     std::cout << left << " " << right << std::endl;
 
     // Используем ориентацию для проверки принадлежности звездному многоугольнику

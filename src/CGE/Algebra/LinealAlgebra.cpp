@@ -8,10 +8,7 @@ double LinealAlgebra::pscalar(Point2D a, Point2D b) {
 }
 
 LinealAlgebra::Orientations LinealAlgebra::orientation(Point2D a, Point2D b, Point2D c) {
-    // vec AB = b - a, vec AC = c - a
-    Point2D ab = b - a;
-    Point2D ac = c - a;
-    double ps_res = pscalar(ab, ac); // pseudoscalar(ab, ac)
+    double ps_res = pscalar(a - b, c - b); // pseudoscalar(ab, ac)
 
     if(ps_res > 0) return Orientations::Left;      // left orientation
     else if(ps_res < 0) return Orientations::Right; // right orientation

@@ -23,7 +23,7 @@ StarPolygon::StarPolygon(int count_vertices, InPolygonChecker checker_func) {
 
 
 void StarPolygon::Regenerate() {
-    StarPolygon temp_polygon(vertices.size(), checker_func_); 
+    StarPolygon temp_polygon(vertices.size() / 2, checker_func_); 
 
     *this = std::move(temp_polygon); 
 }

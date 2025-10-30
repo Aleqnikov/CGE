@@ -145,7 +145,7 @@ void MainWindow::showPolygonInputPage()
         if (choice == "convex")
             polygon = std::make_shared<ConvexPolygon>(n, PolygonAlgorithms::pointInStarPolygon);
         else if (choice == "star")
-            polygon = std::make_shared<StarPolygon>(n, PolygonAlgorithms::pointInStarPolygon2);
+            polygon = std::make_shared<StarPolygon>(n, PolygonAlgorithms::pointInStarPolygon);
         else
             polygon = std::make_shared<RegularPolygon>(n, PolygonAlgorithms::pointInRegularPolygon);
 
